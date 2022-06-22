@@ -1,0 +1,29 @@
+{
+  "name": "aws-throttle",
+  "version": "1.0.0",
+  "description": "A promise based library to fix throttling issues while sending large number of API requests to AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "start",
+    "debug": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nithinpachday/aws-throttle.git"
+  },
+  "keywords": [
+    "aws",
+    "throttle"
+  ],
+  "author": {
+    "name": "Nithin P B",
+    "email": "",
+    "url": "https://www.linkedin.com/in/nithin-p-b-a0818475/"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nithinpachday/aws-throttle/issues"
+  },
+  "homepage": "https://github.com/nithinpachday/aws-throttle#readme"
+}
