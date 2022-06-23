@@ -1,7 +1,7 @@
 # AWS Throttle Fixer
 
 AWS limits the number of requests across all APIs within an AWS account, per region. It also limits the burst across all APIs within an AWS account, per Region for some APIs. Due to this restriction many AWS APIs will trigger error responses like `ThrottledException`, `TooManyRequestsException`, `Throttling` and so on.
-AWS Throttle Fixer internally uses **Exponential backoff** to remediate this issue and it is a promise based library.
+AWS Throttle Fixer internally uses **Exponential backoff** to remediate this issue and it is a promise based library. This library only works with `aws-sdk` version 2.
 
 # Getting Started
 
