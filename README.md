@@ -1,7 +1,7 @@
 # AWS Throttle Fixer
 
-AWS limits the number of requests across all APIs within an AWS account, per region. It also limits the burst across all APIs within an AWS account, per Region for some APIs. Due to this restriction many AWS APIs will trigger error responses like `ThrottledException`, `TooManyRequestsException`, `Throttling` and so on. AWS Throttle Fixer internally uses
-**Exponential backoff** to remediate this issue.
+AWS limits the number of requests across all APIs within an AWS account, per region. It also limits the burst across all APIs within an AWS account, per Region for some APIs. Due to this restriction many AWS APIs will trigger error responses like `ThrottledException`, `TooManyRequestsException`, `Throttling` and so on.
+AWS Throttle Fixer internally uses **Exponential backoff** to remediate this issue and it is a promise based library.
 
 # Getting Started
 
@@ -65,7 +65,7 @@ const response = await throttleFixFn(awsClient, "awsService", params);
 
 ### Available options for configure
 
-| Option API Name  | Description                                                                                                                                                                              | Type       | Default |
+| API Name         | Description                                                                                                                                                                              | Type       | Default |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
 | `retryCount`     | Number of retries to perform in case of throttle error                                                                                                                                   | `number`   | `10`    |
 | `logger`         | A function that can be used for logging the debug logs about throttling                                                                                                                  | `function` | `null`  |
@@ -115,3 +115,9 @@ async function callAwsDescribeSnapshotsAction() {
 
 callAwsDescribeSnapshotsAction().then();
 ```
+
+# Error Codes
+
+1. `UnknownClientException` - this exception will raise if no aws client is provided to the `throttleFixFn` function
+2. `UnknownServiceException` - this exception will raise if no aws service name is provided to the `throttleFixFn` function
+3. others - All other errors are thrown from the method
