@@ -4,14 +4,24 @@ class ThrottleFixer {
     constructor() {
         this.maxRetries = 10
         this.loggerEnabled = false
+        this.ignoreRetryState = false
         this.throttleExceptionCodes = ['ThrottledException', 'TooManyRequestsException', 'Throttling']
     }
 
+    /**
+     * @description - optional  configurations required to run throttle fixer
+     * @param {object} data - configuration items 
+     * @param {number} [data.retryCount = 10] - maximum number of retries required
+     * @param {string[]} [data.exceptionCodes = []] - error code that need to treated as Throttling/ which requires to run again
+     * @param {boolean} [data.ignoreRetryState=false] - ignore the retry state provided by aws in api response
+     * @param {*} data.logger - Logging function, takes a function which accepts a single string parameter. Example -  console.log
+     */
     configure(data) {
         const {
             retryCount = this.maxRetries,
             logger,
-            exceptionCodes = []
+            exceptionCodes = [],
+            ignoreRetryState = false
         } = data
         if (logger) {
             this.loggerEnabled = true
@@ -21,6 +31,7 @@ class ThrottleFixer {
             this.throttleExceptionCodes = [...this.throttleExceptionCodes, ...exceptionCodes]
         }
         this.maxRetries = retryCount
+        this.ignoreRetryState = ignoreRetryState
         this.logging('ThrottleFixer enabled')
     }
 
@@ -41,7 +52,8 @@ class ThrottleFixer {
                 } catch (e) {
                     if (throttledExceptions.includes(e.code)) {
                         this.logging(`Request throttling for ${awsAction}. Attempt ${retryCount}`)
-                        if (!e?.retryable) {
+
+                        if (!this.ignoreRetryState && !e?.retryable) {
                             retryCount = MAX_ATTEMPT + 1
                             retry = false
                             this.logging(`The request ${awsAction} is not retirable.`)

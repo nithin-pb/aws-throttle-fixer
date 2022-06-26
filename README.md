@@ -51,11 +51,11 @@ const throttleFixFn = TF.throttleFixer();
 
 `throttleFunction` takes 3 arguments. All arguments are required
 
-| Sl.no | Argument         | Example              | Description                              | Type     |
-| ----- | ---------------- | -------------------- | ---------------------------------------- | -------- |
-| 1     | AWS Client/Class | `EC2`                | The aws class initialed using `aws-sdk`  | `class`  |
-| 2     | Service          | `describeSnapshots`  | The method/service/action from the class | `string` |
-| 3     | Parameters       | `{ MaxResults: 10 }` | Parameter to pass to the AWS method      | `object` |
+| Sl.no | Argument         | Description                             | Type     | Example              |
+| ----- | ---------------- | --------------------------------------- | -------- | -------------------- |
+| 1     | AWS Client/Class | The aws class initialed using `aws-sdk` | `class`  | `EC2`                |
+| 2     | Method           | The method or action from the class     | `string` | `describeSnapshots`  |
+| 3     | Parameters       | Parameter to pass to the AWS method     | `object` | `{ MaxResults: 10 }` |
 
 **Call `throttleFixFn` function with all arguments provided**
 
@@ -65,11 +65,12 @@ const response = await throttleFixFn(awsClient, "awsService", params);
 
 ### Available options for configure
 
-| API Name         | Description                                                                                                                                                                              | Type       | Default |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
-| `retryCount`     | Number of retries to perform in case of throttle error                                                                                                                                   | `number`   | `10`    |
-| `logger`         | A function that can be used for logging the debug logs about throttling                                                                                                                  | `function` | `null`  |
-| `exceptionCodes` | What all error codes need to be considered as Throttled? by default following error codes are considered to be throttling `ThrottledException`, `TooManyRequestsException`, `Throttling` | `string[]` | `[]`    |
+| API Name           | Description                                                                                                                                                                              | Type       | Default |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------- |
+| `retryCount`       | Number of retries to perform in case of throttle error                                                                                                                                   | `number`   | `10`    |
+| `logger`           | A function that can be used for logging the debug logs about throttling                                                                                                                  | `function` | `null`  |
+| `exceptionCodes`   | What all error codes need to be considered as Throttled? by default following error codes are considered to be throttling `ThrottledException`, `TooManyRequestsException`, `Throttling` | `string[]` | `[]`    |
+| `ignoreRetryState` | If set to true, will ignore the retry state `retryable` in aws api response                                                                                                              | `boolean`  | `false` |
 
 # Example
 
