@@ -1,6 +1,6 @@
 {
   "name": "aws-throttle-fixer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A promise based library to fix throttling issues while sending large number of API requests to AWS",
   "main": "index.js",
   "scripts": {
