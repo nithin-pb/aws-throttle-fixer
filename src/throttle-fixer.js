@@ -1,4 +1,6 @@
-const { UnknownClientException, UnknownServiceException } = require('./errors')
+const { sdkV2 } = require('./sdk-v2')
+const { sdkV3 } = require('./sdk-v3')
+const { UnknownSdkVersionException } = require('./errors')
 
 class ThrottleFixer {
     constructor() {
@@ -6,6 +8,7 @@ class ThrottleFixer {
         this.loggerEnabled = false
         this.ignoreRetryState = false
         this.throttleExceptionCodes = ['ThrottledException', 'TooManyRequestsException', 'Throttling']
+        this.sdkVersion = 2
     }
 
     /**
@@ -14,6 +17,7 @@ class ThrottleFixer {
      * @param {number} [data.retryCount = 10] - maximum number of retries required
      * @param {string[]} [data.exceptionCodes = []] - error code that need to treated as Throttling/ which requires to run again
      * @param {boolean} [data.ignoreRetryState=false] - ignore the retry state provided by aws in api response
+     * @param {number} [data.sdkVersion=2] - AWS SDK version. 2 and 3 are only accepted
      * @param {*} data.logger - Logging function, takes a function which accepts a single string parameter. Example -  console.log
      */
     configure(data) {
@@ -21,7 +25,8 @@ class ThrottleFixer {
             retryCount = this.maxRetries,
             logger,
             exceptionCodes = [],
-            ignoreRetryState = false
+            ignoreRetryState = false,
+            sdkVersion = 2
         } = data
         if (logger) {
             this.loggerEnabled = true
@@ -30,45 +35,20 @@ class ThrottleFixer {
         if (exceptionCodes.length > 0) {
             this.throttleExceptionCodes = [...this.throttleExceptionCodes, ...exceptionCodes]
         }
+        this.sdkVersion = sdkVersion
         this.maxRetries = retryCount
         this.ignoreRetryState = ignoreRetryState
-        this.logging('ThrottleFixer enabled')
+        this.logging(`ThrottleFixer enabled. Ready to receive requests from AWS-SDK v${this.sdkVersion}xx`)
     }
 
     throttleFixer() {
-        return async function (client, awsAction, params) {
-            if (!client) throw new UnknownClientException()
-            if (!awsAction) throw new UnknownServiceException()
-            let retry = false
-            let retryCount = 0
-            const MAX_ATTEMPT = this.maxRetries
-            const throttledExceptions = this.throttleExceptionCodes
-            const delay = (retryAttempt) => new Promise((resolve) => setTimeout(resolve, 10 ** retryAttempt))
-            do {
-                try {
-                    retry = false
-                    this.logging(`Calling ${awsAction}. Attempt ${retryCount}`)
-                    return await client[awsAction](params).promise()
-                } catch (e) {
-                    if (throttledExceptions.includes(e.code)) {
-                        this.logging(`Request throttling for ${awsAction}. Attempt ${retryCount}`)
-
-                        if (!this.ignoreRetryState && !e?.retryable) {
-                            retryCount = MAX_ATTEMPT + 1
-                            retry = false
-                            this.logging(`The request ${awsAction} is not retirable.`)
-                        }
-                        if (retryCount <= MAX_ATTEMPT) {
-                            await delay(retryCount < 3 ? 3 : retryCount)
-                            retryCount += 1
-                            retry = true
-                        }
-                    } else {
-                        throw e
-                    }
-                }
-            } while (retry)
-        }.bind(this)
+        if (this.sdkVersion === 2) {
+            return sdkV2.bind(this)
+        }
+        if (this.sdkVersion === 3) {
+            return sdkV3.bind(this)
+        }
+        throw new UnknownSdkVersionException()
     }
 
     logging(message) {

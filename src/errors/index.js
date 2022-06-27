@@ -1,4 +1,6 @@
 module.exports = {
     ...require('./unknown-client'),
-    ...require('./unknown-service')
+    ...require('./unknown-module'),
+    ...require('./unknown-sdk-version'),
+    ...require('./unknown-command')
 }
