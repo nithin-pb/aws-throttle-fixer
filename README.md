@@ -5,14 +5,14 @@ AWS Throttle Fixer internally uses **Exponential backoff** to remediate this iss
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
-  - [How to install](#how-to-install)
-- [Example](#example)
-  - [aws-sdk version 2](#example)
-  - [aws-sdk version 3](#example)
-- [Usage](#usage)
-- [Configuration](#configurations)
-- [Error Codes](#example)
+-   [Getting Started](#getting-started)
+    -   [How to install](#how-to-install)
+-   [Example](#example)
+    -   [aws-sdk version 2](#example)
+    -   [aws-sdk version 3](#example)
+-   [Usage](#usage)
+-   [Configuration](#configurations)
+-   [Error Codes](#example)
 
 # Getting Started
 
@@ -38,45 +38,41 @@ following example demonstrate calling a describeSnapshots operation with throttl
 
 ```js
 // aws init
-require("dotenv").config();
-const AWS = require("aws-sdk");
+require('dotenv').config()
+const AWS = require('aws-sdk')
 
 let awsConfig = {
-  region: process.env.REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-};
-AWS.config.update(awsConfig);
-const ec2Client = new AWS.EC2();
+	region: process.env.REGION,
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+}
+AWS.config.update(awsConfig)
+const ec2Client = new AWS.EC2()
 
 // aws-throttle-fixer init
-const ThrottleFixer = require("aws-throttle-fixer");
-const TF = new ThrottleFixer();
+const ThrottleFixer = require('aws-throttle-fixer')
+const TF = new ThrottleFixer()
 const tfConfig = {
-  retryCount: 24,
-  logger: console.log,
-  sdkVersion: 2,
-  exceptionCodes: ["RequestLimitExceeded"],
-};
-TF.configure(tfConfig);
-const throttleFixFn = TF.throttleFixer();
+	retryCount: 24,
+	logger: console.log,
+	sdkVersion: 2,
+	exceptionCodes: ['RequestLimitExceeded'],
+}
+TF.configure(tfConfig)
+const throttleFixFn = TF.throttleFixer()
 
 // aws call is in the function
 async function callAwsDescribeSnapshotsAction() {
-  try {
-    const params = { MaxResults: 10 };
-    const snapshotDetails = await throttleFixFn(
-      ec2Client,
-      "describeSnapshots",
-      params
-    ); // calling describeSnapshots operation with throttle fix added
-    return snapshotDetails;
-  } catch (e) {
-    console.error(e);
-  }
+	try {
+		const params = { MaxResults: 10 }
+		const snapshotDetails = await throttleFixFn(ec2Client, 'describeSnapshots', params) // calling describeSnapshots operation with throttle fix added
+		return snapshotDetails
+	} catch (e) {
+		console.error(e)
+	}
 }
 
-callAwsDescribeSnapshotsAction().then();
+callAwsDescribeSnapshotsAction().then()
 ```
 
 ## @aws-sdk version 3.x.x
@@ -85,37 +81,33 @@ following example demonstrate calling a describeSnapshots operation with throttl
 
 ```js
 // aws init
-require("dotenv").config();
-const { EC2Client, DescribeSnapshotsCommand } = require("@aws-sdk/client-ec2");
-const client = new EC2Client({ region: "us-east-1" });
+require('dotenv').config()
+const { EC2Client, DescribeSnapshotsCommand } = require('@aws-sdk/client-ec2')
+const client = new EC2Client({ region: 'us-east-1' })
 
 // aws-throttle-fixer init
-const ThrottleFixer = require("aws-throttle-fixer");
-const TF = new ThrottleFixer();
+const ThrottleFixer = require('aws-throttle-fixer')
+const TF = new ThrottleFixer()
 const tfConfig = {
-  retryCount: 24,
-  logger: console.log,
-  sdkVersion: 3,
-  exceptionCodes: ["RequestLimitExceeded"],
-};
-TF.configure(tfConfig);
-const throttleFixFn = TF.throttleFixer();
+	retryCount: 24,
+	logger: console.log,
+	sdkVersion: 3,
+	exceptionCodes: ['RequestLimitExceeded'],
+}
+TF.configure(tfConfig)
+const throttleFixFn = TF.throttleFixer()
 
 // aws call is in the function
 async function callAwsDescribeSnapshotsAction() {
-  try {
-    const params = { MaxResults: 10 };
-    const { Snapshots } = await throttleFixFunction(
-      client,
-      DescribeSnapshotsCommand,
-      params
-    );
-  } catch (e) {
-    console.error(e);
-  }
+	try {
+		const params = { MaxResults: 10 }
+		const { Snapshots } = await throttleFixFunction(client, DescribeSnapshotsCommand, params)
+	} catch (e) {
+		console.error(e)
+	}
 }
 
-callAwsDescribeSnapshotsAction().then();
+callAwsDescribeSnapshotsAction().then()
 ```
 
 # Usage
@@ -127,25 +119,25 @@ To use the AWS-Throttle-Fixer within your nodejs project, import `aws-throttle-f
 **ES5 imports**
 
 ```js
-const ThrottleFixer = require("aws-throttle-fixer");
+const ThrottleFixer = require('aws-throttle-fixer')
 ```
 
 **Create the Throttle fixer instance**
 
 ```js
-const TF = new ThrottleFixer();
+const TF = new ThrottleFixer()
 ```
 
 **Configure the options**
 
 ```js
-TF.configure({ retryCount: 24 }); // more available options are listed [here](#configure)
+TF.configure({ retryCount: 24 }) // more available options are listed [here](#configure)
 ```
 
 **Create a callable throttle method**
 
 ```js
-const throttleFixFn = TF.throttleFixer();
+const throttleFixFn = TF.throttleFixer()
 ```
 
 `throttleFunction` takes 3 arguments. All are required and arguments are different for different sdk version
@@ -169,19 +161,20 @@ With sdk version 3
 **Call `throttleFixFn` function with all arguments provided**
 
 ```js
-const response = await throttleFixFn(awsClient, "awsService", params); // for sdk version 2
-const response = await throttleFixFn(awsClient, CommandFromClient, params); // for sdk version 3
+const response = await throttleFixFn(awsClient, 'awsService', params) // for sdk version 2
+const response = await throttleFixFn(awsClient, CommandFromClient, params) // for sdk version 3
 ```
 
 ## Configurations
 
-| API Name           | Description                                                                                                                                                                              | Type       | Default |
-| :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- | :------ |
-| `retryCount`       | Number of retries to perform in case of throttle error                                                                                                                                   | `number`   | `10`    |
-| `logger`           | A function that can be used for logging the debug logs about throttling                                                                                                                  | `function` | `null`  |
-| `exceptionCodes`   | What all error codes need to be considered as Throttled? by default following error codes are considered to be throttling `ThrottledException`, `TooManyRequestsException`, `Throttling` | `string[]` | `[]`    |
-| `ignoreRetryState` | If set to true, will ignore the retry state `retryable` in aws api response. Available only when using `sdkVersion` with value 2                                                         | `boolean`  | `false` |
-| `sdkVersion`       | AWS SDK version number, provide only major version                                                                                                                                       | `number`   | `2`     |
+| API Name             | Description                                                                                                                                                                              | Type       | Default |
+| :------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- | :------ |
+| `retryCount`         | Number of retries to perform in case of throttle error                                                                                                                                   | `number`   | `10`    |
+| `logger`             | A function that can be used for logging the debug logs about throttling                                                                                                                  | `function` | `null`  |
+| `exceptionCodes`     | What all error codes need to be considered as Throttled? by default following error codes are considered to be throttling `ThrottledException`, `TooManyRequestsException`, `Throttling` | `string[]` | `[]`    |
+| `ignoreRetryState`   | If set to true, will ignore the retry state `retryable` in aws api response. Available only when using `sdkVersion` with value 2                                                         | `boolean`  | `false` |
+| `sdkVersion`         | AWS SDK version number, provide only major version                                                                                                                                       | `number`   | `2`     |
+| `additionalWaitTime` | API will wait for the specified time before making any other actions, (time in milliseconds)                                                                                             | `number`   | `0`     |
 
 # Error Codes
 

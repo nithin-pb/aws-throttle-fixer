@@ -1,31 +1,31 @@
 {
-  "name": "aws-throttle-fixer",
-  "version": "1.1.0",
-  "description": "A promise based library to fix throttling issues while sending large number of API requests to AWS",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "typings": "index.d.ts",
-  "scripts": {
-    "test": "test",
-    "start": "node index.js",
-    "debug": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nithinpachday/aws-throttle-fixer.git"
-  },
-  "keywords": [
-    "aws",
-    "throttle"
-  ],
-  "author": {
-    "name": "Nithin P B",
-    "email": "",
-    "url": "https://www.linkedin.com/in/nithin-p-b-a0818475/"
-  },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/nithinpachday/aws-throttle-fixer/issues"
-  },
-  "homepage": "https://github.com/nithinpachday/aws-throttle-fixer#readme"
+	"name": "aws-throttle-fixer",
+	"version": "1.1.1",
+	"description": "A promise based library to fix throttling issues while sending large number of API requests to AWS",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"typings": "index.d.ts",
+	"scripts": {
+		"test": "test",
+		"start": "node index.js",
+		"debug": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nithinpachday/aws-throttle-fixer.git"
+	},
+	"keywords": [
+		"aws",
+		"throttle"
+	],
+	"author": {
+		"name": "Nithin P B",
+		"email": "",
+		"url": "https://www.linkedin.com/in/nithin-p-b-a0818475/"
+	},
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/nithinpachday/aws-throttle-fixer/issues"
+	},
+	"homepage": "https://github.com/nithinpachday/aws-throttle-fixer#readme"
 }
